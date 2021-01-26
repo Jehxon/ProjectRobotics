@@ -123,7 +123,7 @@ for i = 2 : nbLoops
             if(nbMeasuresPrevious - nbMeasures == 1)
                 % Here we lost one magnet. Which one ??
             end
-            %azdiuagduyazudyaz 
+            
             
             
             % Handle if we quit two magnets at the same time or just one
