@@ -18,7 +18,7 @@ while (i<=vectSize) && (bitVector(i)==not(magnetDetected))
     i = i+1 ;
 end
 nbMeasurements = 0 ;
-measurements = zeros(1,2) ;
+measurements = -ones(1,2) ;
 
 while i < vectSize
     indBegin = i ;
@@ -32,6 +32,6 @@ while i < vectSize
         i = i+1 ;
     end
 end
-measurements = measurements(1:nbMeasurements) ;
+%measurements = measurements(1:nbMeasurements) ;
 
 return

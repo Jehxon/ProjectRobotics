@@ -1,0 +1,152 @@
+% Test the detection of a magnet loss
+
+RobotAndSensorDefinition ;
+DefineVariances ;
+
+X = [ 0, 0, 0*pi/180 ].' ;    % Set this according to robot initial position.
+
+%Load the data file
+dataFile = uigetfile('data/*.txt','Select data file') ;
+if isunix 
+    eval(['load data/' , dataFile]) ;
+else
+    eval(['load data\' , dataFile]) ;
+end
+dataFile = strrep(dataFile, '.txt', '') ;
+eval(['data = ',dataFile,'; clear ',dataFile]) ;
+
+disp('-----');
+disp('MagnetLoc running with:');
+fprintf('File: %s\n',dataFile);
+fprintf('Initial posture: x: %d mm  y: %d mm  theta: %d deg.\n', X(1),X(2),X(3)*180/pi);
+fprintf('Tuning parameter: %d\n',sigmaTuning);
+
+
+[nbLoops,t,qL,qR,sensorReadings] = PreprocessData(data, dots2rad, dumbFactor, subSamplingFactor ) ;
+
+wbHandle = waitbar(0,'Computing...') ;
+
+buffer = nan(2,nbLoops);
+buffer(
+
+for i = 2 : nbLoops 
+    
+    t = (i-1)*samplingPeriod ;
+    
+    waitbar(i/nbLoops) ;
+
+
+    measures = ExtractMeasurements( sensorReadings(i), ...
+        nbReedSensors, magnetDetected ) ;
+    
+    
+    
+    if(isempty(measures))
+        % Here we need to reset the buffers because we have treated all the
+        % measurments before, if everything is ok...
+        
+        %ResetBuffers
+    else
+        nbMeasures = length(measures);
+        bufferMeasures1(i) = measures(1);
+        
+        % If we detected two magnets
+        if(nbMeasures == 2)
+            %detect which magnet is where 
+            bufferMeasures2(i) = measures(2);
+        end
+        
+        if(nbMeasures < nbMeasuresPrevious)
+            % If the number of magnets detected is the same as the previous iteration, 
+            % there is no changes
+            % Here we detected at least a measure less than previously,
+            % this means we just quit one or two magnet(s)
+            
+            if(nbMeasuresPrevious - nbMeasures == 1)
+                % Here we lost one magnet. Which one ??
+            end
+            %azdiuagduyazudyaz 
+            
+            
+            % Handle if we quit two magnets at the same time or just one
+            % How do we do that ?
+            %recompute_verything(buffers);
+            nbMeasuresPrevious = nbMeasures;
+        end
+    end
+    
+    
+    
+%    if length(measures) > 0 
+%        i
+%        measures
+%        disp('--');
+%    end
+            
+    % When two or more magnets are detected simultaneously, they are taken
+    % as independant measurements, for the sake of simplicity.
+
+    for measNumber = 1 : length(measures) 
+        
+        % Homogeneous transform of robot frame with respect to world frame
+        oTm = [ cos(X(3)) , -sin(X(3)) , X(1)  ; 
+                sin(X(3)) ,  cos(X(3)) , X(2)  ; 
+                    0     ,      0     ,  1    ] ;
+        mTo = inv(oTm) ;
+        
+        % Measurement vector: coordinates of the magnet in Rm.
+        Y = [ sensorPosAlongXm ; 
+              sensorRes*( measures(measNumber) - sensorOffset ) ] ;
+         
+        % Now in homogeneous coordinates for calculations.
+        mMeasMagnet = [ Y ;                
+                        1 ] ;
+                
+        % Corresponding position in absolute frame. 
+        oMeasMagnet = oTm * mMeasMagnet ;
+        
+        % Due to measurement and localization errors, the previously calculated
+        % position does not match an actual magnet.
+        % Which actual magnet is closest? It will be the candidate magnet for
+        % the update phase of the state estimator.
+        oRealMagnet = round( oMeasMagnet ./ [xSpacing ; ySpacing ; 1] ) .* [xSpacing ; ySpacing ; 1] ;
+
+        % The position of the real magnet in robot frame. It will in general 
+        % be different from the measured one. 
+        mRealMagnet = oTm \ oRealMagnet ;  % That's inv(oTm)*oRealMagnet = mTo*oRealMagnet
+        
+        % The expected measurement are the two coordinates of the real 
+        % magnet in the robot frame.
+        Yhat = mRealMagnet(1:2) ;
+        
+        C = [ -cos(X(3)) , -sin(X(3)) , -sin(X(3))*(oRealMagnet(1)-X(1))+cos(X(3))*(oRealMagnet(2)-X(2)) ;
+               sin(X(3)) , -cos(X(3)) , -sin(X(3))*(oRealMagnet(2)-X(2))-cos(X(3))*(oRealMagnet(1)-X(1)) ] ;
+                      
+        innov = Y - Yhat ;   
+        dMaha = sqrt( innov.' * inv( C*P*C.' + Qgamma) * innov ) ;
+        
+        LogData( t , 'measurement' , X , P , [0;0] , Y ) ;
+        
+        if dMaha <= mahaThreshold
+            K = P * C.' * inv( C*P*C.' + Qgamma) ;
+            X = X + K*innov ;
+            P = (eye(length(X)) - K*C) * P ;
+            LogData( t , 'update' , X , P , [0;0] , [0;0] ) ;
+        end
+        
+    end
+end
+
+% Save all tunings and robot parameters, so the conditions under
+% which the results were obtained are known. Also save inputs and 
+% measurements for later display.    
+    
+save inputLog ...
+     rwheel trackGauge encoderRes nbReedSensors samplingPeriod ...
+     xSpacing ySpacing  ...
+     U sensorReadings ...
+     Pinit Qgamma sigmaTuning Qbeta Qalpha mahaThreshold 
+
+ 
+LogData( t , 'termination' , X , P , [0;0] , [0;0] ) ;
+close(wbHandle) ;
