@@ -55,14 +55,7 @@ LogData( 0 , 'init' , X , P , [0;0] , [0;0] ) ;
 
 wbHandle = waitbar(0,'Computing...') ;
 
-bufferMeasures1 = nan(1,nbLoops); % We can test isnan(buffer(i)) !! yay !
-bufferMeasures2 = nan(1,nbLoops);
-nbMeasures = 0;
-nbMeasuresPrevious = 0;
-bufferXhat = nan(3,nbLoops);
-bufferXhat(:,1) = X;
-bufferP = nan(9,nbLoops);
-bufferP(:,1) = P(:);
+dataToPutInBuffer = struct;
 
 
 for i = 2 : nbLoops 
@@ -86,11 +79,9 @@ for i = 2 : nbLoops
        
     % Predic state (here odometry)
     X = EvolutionModel( X , U ) ;
-    bufferXhat(:,i) = X;
     
     % Error propagation
     P = A*P*(A.') + B*Qbeta*(B.') + Qalpha ;
-    bufferP(:,i) = P(:);
     
     LogData( t , 'prediction' , X , P , U , [0;0] ) ;
     
@@ -99,41 +90,9 @@ for i = 2 : nbLoops
     measures = ExtractMeasurements( sensorReadings(i), ...
         nbReedSensors, magnetDetected ) ;
     
-    if(isempty(measures))
-        % Here we need to reset the buffers because we have treated all the
-        % measurments before, if everything is ok...
-        
-        %ResetBuffers
-    else
-        nbMeasures = length(measures);
-        bufferMeasures1(i) = measures(1);
-        
-        % If we detected two magnets
-        if(nbMeasures == 2)
-            %detect which magnet is where 
-            bufferMeasures2(i) = measures(2);
-        end
-        
-        if(nbMeasures < nbMeasuresPrevious)
-            % If the number of magnets detected is the same as the previous iteration, 
-            % there is no changes
-            % Here we detected at least a measure less than previously,
-            % this means we just quit one or two magnet(s)
-            
-            if(nbMeasuresPrevious - nbMeasures == 1)
-                % Here we lost one magnet. Which one ??
-            end
-            %azdiuagduyazudyaz 
-            
-            
-            % Handle if we quit two magnets at the same time or just one
-            % How do we do that ?
-            %recompute_verything(buffers);
-            nbMeasuresPrevious = nbMeasures;
-        end
-    end
-    
-    
+    dataToPutInBuffer.P = P;
+    dataToPutInBuffer.X = X;
+    dataToPutInBuffer.U = U;
     
 %    if length(measures) > 0 
 %        i
@@ -155,6 +114,8 @@ for i = 2 : nbLoops
         % Measurement vector: coordinates of the magnet in Rm.
         Y = [ sensorPosAlongXm ; 
               sensorRes*( measures(measNumber) - sensorOffset ) ] ;
+        
+       dataToPutInBuffer.Y = Y;
          
         % Now in homogeneous coordinates for calculations.
         mMeasMagnet = [ Y ;                
@@ -190,6 +151,9 @@ for i = 2 : nbLoops
             X = X + K*innov ;
             P = (eye(length(X)) - K*C) * P ;
             LogData( t , 'update' , X , P , [0;0] , [0;0] ) ;
+            
+            dataToPutInBuffer.X = X;
+            dataToPutInBuffer.P = P;
         end
         
     end
