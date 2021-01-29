@@ -15,12 +15,9 @@ if(dataElem.m(1) == 0 && dataElem.m(2) == 0)
     isMagnet = 0;
     else
     isMagnet = 1;
-%   how many? 
-%     if(dataElem.m(2) == 0)
-%         numMag = 1;
-%     else
-%         numMag = 2;
-%     end
+%   what magnet? 
+    if()
+    end
 end
 
 if(isFull == 1)
