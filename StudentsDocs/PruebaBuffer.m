@@ -5,12 +5,12 @@ global tail
 global buffer 
 global isFull 
 global isEmpty
-global rango
+global rank_
 
 head = 1;
 tail = 1;
 buffer = [];
-rango = 5;
+rank_ = 5;
 isFull = 0;
 isEmpty = 0; 
 a = [];
@@ -37,15 +37,15 @@ data.m = [7;7];
 writeBuffer(data);
 
 
-% for f = 1 : head-tail
-%  a(:,f) = readBuffer();
-% end
+
+ a = readBuffer();
+
 
 
  
 % writeBuffer(5);
-a = readBuffer();
-b = readBuffer();
+
+
 % a(5) = readBuffer();
 % writeBuffer(13);
 
