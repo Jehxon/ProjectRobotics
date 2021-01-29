@@ -26,8 +26,8 @@ fprintf('Tuning parameter: %d\n',sigmaTuning);
 
 wbHandle = waitbar(0,'Computing...') ;
 
-buffer = nan(nbLoops,3);
-buffer(1,:) = [0 0 0];
+buffer = nan(nbLoops,4);
+buffer(1,:) = [0 0 0 0];
 
 
 for i = 2 : nbLoops 
@@ -41,7 +41,7 @@ for i = 2 : nbLoops
         nbReedSensors, magnetDetected );
     
     
-    buffer(i,3) = detectChange(measures, buffer(i-1,1:2));
+    [buffer(i,3),buffer(i,4)] = detectChange2(measures, buffer(i-1,1:2));
     
     
     buffer(i,1:2) = measures;
