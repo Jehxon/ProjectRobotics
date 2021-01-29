@@ -11,12 +11,17 @@ isEmpty = 0;
 
 % Magnet?
 
-m = dataElem(15:16,:);
-if(m(1) == 0 && m(2) == 0)
+if(dataElem.m(1) == 0 && dataElem.m(2) == 0)
     isMagnet = 0;
-else
+    else
     isMagnet = 1;
 end
+% m = dataElem(15:16,:);
+% if(m(1) == 0 && m(2) == 0)
+%     isMagnet = 0;
+% else
+%     isMagnet = 1;
+% end
 
 
 if(isFull == 1)
@@ -24,7 +29,12 @@ if(isFull == 1)
 else
     
 % write data into the buffer
-    buffer(:,head) = dataElem;
+    buffer.x(:,head) = dataElem.x;
+    buffer.p(:,head) = dataElem.p;
+    buffer.y(:,head) = dataElem.y;
+    buffer.u(:,head) = dataElem.u;
+    buffer.t(:,head) = dataElem.t;
+    buffer.m(:,head) = dataElem.m;
     
 % if there is not a magnet, we do not increase head
     if(isMagnet == 1)
