@@ -16,7 +16,7 @@ isEmpty = 0;
 a = [];
 
 data.x = [1;1;1];
-data.p = [2;2;2;2;2];
+data.p = [2;2;2;2;2;2];
 data.y = [3;3];
 data.u = [4;4];
 data.t = [5];
@@ -26,6 +26,15 @@ data.m = [6;6];
 % for i=1:1:4
 writeBuffer(data);
 
+data.x = [2;2;2];
+data.p = [3;3;3;3;3;3];
+data.y = [4;4];
+data.u = [5;5];
+data.t = [6];
+data.m = [7;7];
+
+
+writeBuffer(data);
 
 
 % for f = 1 : head-tail
@@ -35,7 +44,8 @@ writeBuffer(data);
 
  
 % writeBuffer(5);
-% a(4) = readBuffer();
+a = readBuffer();
+b = readBuffer();
 % a(5) = readBuffer();
 % writeBuffer(13);
 

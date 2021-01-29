@@ -16,13 +16,6 @@ if(dataElem.m(1) == 0 && dataElem.m(2) == 0)
     else
     isMagnet = 1;
 end
-% m = dataElem(15:16,:);
-% if(m(1) == 0 && m(2) == 0)
-%     isMagnet = 0;
-% else
-%     isMagnet = 1;
-% end
-
 
 if(isFull == 1)
     disp('The buffe is Full');

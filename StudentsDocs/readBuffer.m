@@ -14,7 +14,14 @@ if(isEmpty == 1)
 else
     
 % Read data from the buffer
-    data = buffer(:,tail);
+    data.x = buffer.x(:,tail);
+    data.p = buffer.p(:,tail);
+    data.y = buffer.y(:,tail);
+    data.u = buffer.u(:,tail);
+    data.t = buffer.t(:,tail);
+    data.m = buffer.m(:,tail);
+    
+    
     tail = tail + 1;
 
 % If we arrive to the end -> reset index
