@@ -22,23 +22,23 @@ usT2 = 0;
 
 a = [];
 
-data.x = [1;1;1];
-data.p = [2;2;2;2;2;2];
-data.y = [3;3];
-data.u = [4;4];
-data.t = [5];
-data.m = [6;6];
+data.X = [1;1;1];
+data.P = [2;2;2;2;2;2];
+data.Y = [3;3];
+data.U = [4;4];
+data.T = [5];
+data.M = [6;6];
 
 % i = [1;2;3;4;5;2;3;4;5;3;4;5;2;3;4;5];
 % for i=1:1:4
 writeBuffer(data,1);
 
-data.x = [2;2;2];
-data.p = [3;3;3;3;3;3];
-data.y = [4;4];
-data.u = [5;5];
-data.t = [6];
-data.m = [7;7];
+data.X = [0.2;0;0.2];
+data.P = [3;3;3;3;3;3];
+data.Y = [4;4];
+data.U = [5;5];
+data.T = [6];
+data.M = [7;7];
 
 
 writeBuffer(data,1);

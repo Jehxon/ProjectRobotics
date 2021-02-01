@@ -20,11 +20,9 @@ else
 
 if(usT1 < usT2)
     tail = tail2;
-    tailend = tail1;
     usT2 = usT2 - 1;
 else
     tail = tail1;
-    tailend = tail2;
     usT1 = usT1 - 1;
 end
 
@@ -41,12 +39,12 @@ end
 % Read data from the buffer
 
 for f = 1 : head-t
-    data.x(:,f) = buffer.x(:,tail);
-    data.p(:,f) = buffer.p(:,tail);
-    data.y(:,f) = buffer.y(:,tail);
-    data.u(:,f) = buffer.u(:,tail);
-    data.t(:,f) = buffer.t(:,tail);
-    data.m(:,f) = buffer.m(:,tail);
+    data.X(:,f) = buffer.X(:,tail);
+    data.P(:,f) = buffer.P(:,tail);
+    data.Y(:,f) = buffer.Y(:,tail);
+    data.U(:,f) = buffer.U(:,tail);
+    data.T(:,f) = buffer.T(:,tail);
+    data.M(:,f) = buffer.M(:,tail);
 
 
     tail = tail + 1;

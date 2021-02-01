@@ -14,7 +14,7 @@ isEmpty = 0;
 
 % Magnet?
 
-if(dataElem.m(1) == 0 && dataElem.m(2) == 0)
+if(dataElem.M(1) == 0 && dataElem.M(2) == 0)
     isMagnet = 0;
     else
     isMagnet = 1;
@@ -41,12 +41,12 @@ else
     
 % write data into the buffer
 
-    buffer.x(:,head) = dataElem.x;
-    buffer.p(:,head) = dataElem.p;
-    buffer.y(:,head) = dataElem.y;
-    buffer.u(:,head) = dataElem.u;
-    buffer.t(:,head) = dataElem.t;
-    buffer.m(:,head) = dataElem.m;
+    buffer.X(:,head) = dataElem.X;
+    buffer.P(:,head) = dataElem.P;
+    buffer.Y(:,head) = dataElem.Y;
+    buffer.U(:,head) = dataElem.U;
+    buffer.T(:,head) = dataElem.T;
+    buffer.M(:,head) = dataElem.M;
     
 % if there is not a magnet, we do not increase head
 

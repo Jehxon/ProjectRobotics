@@ -19,8 +19,10 @@
 % and Marteen Samuel. Supervision: Gaëtan Garcia.
 %    - This program (using Samuel and Cichosz's work): Gaëtan Garcia
 
+clear all
 RobotAndSensorDefinition ;
 DefineVariances ;
+BufferDefinition ;
 
 X = [ 0, 0, 0*pi/180 ].' ;    % Set this according to robot initial position.
 
@@ -61,6 +63,7 @@ dataToPutInBuffer = struct;
 for i = 2 : nbLoops 
     
     t = (i-1)*samplingPeriod ;
+    dataToPutInBuffer.T = t;
     
     waitbar(i/nbLoops) ;
 
@@ -90,7 +93,9 @@ for i = 2 : nbLoops
     measures = ExtractMeasurements( sensorReadings(i), ...
         nbReedSensors, magnetDetected ) ;
     
-    dataToPutInBuffer.P = P;
+    dataToPutInBuffer.M = measures;
+    p = matrixToVector(P);
+    dataToPutInBuffer.P = p;  
     dataToPutInBuffer.X = X;
     dataToPutInBuffer.U = U;
     
@@ -153,12 +158,14 @@ for i = 2 : nbLoops
             LogData( t , 'update' , X , P , [0;0] , [0;0] ) ;
             
             dataToPutInBuffer.X = X;
-            dataToPutInBuffer.P = P;
+            p = matrixToVector(P);
+            dataToPutInBuffer.P = p;
         end
         
     end
+    writeBuffer(dataToPutInBuffer,0);
 end
-
+b = readBuffer();
 % Save all tunings and robot parameters, so the conditions under
 % which the results were obtained are known. Also save inputs and 
 % measurements for later display.    
