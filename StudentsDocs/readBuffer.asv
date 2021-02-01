@@ -1,7 +1,8 @@
 function data = readBuffer()
 
 global head 
-global tail 
+global tail1
+global tail2
 global buffer 
 global rank_
 global isFull
@@ -13,9 +14,25 @@ if(isEmpty == 1)
     disp ('The buffer is empty');
 else
     
+% 
 
+if(magnetLost == 1)
+end
     
+% Check which tail we use
+if(usT1 < usT2)
+    tail = tail1;
+else
+    tail = tail2;
+end
+
+% afasd
+if(head - tail < 0)
+    tail = -(1 + rank_ - tail);
+end
+
 % Read data from the buffer
+
 for f = 1 : head-tail
     data.x(:,tail) = buffer.x(:,tail);
     data.p(:,tail) = buffer.p(:,tail);

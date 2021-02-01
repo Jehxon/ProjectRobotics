@@ -1,13 +1,18 @@
 function writeBuffer(dataElem)
 
 global head 
-global tail 
+global tail1
+global tail2
 global buffer 
 global isFull
 global isEmpty
 global rank_
+global usT1
+global usT2
 
 isEmpty = 0;
+usT1 = 0;
+usT2 = 0;
 
 % Magnet?
 
@@ -15,8 +20,26 @@ if(dataElem.m(1) == 0 && dataElem.m(2) == 0)
     isMagnet = 0;
     else
     isMagnet = 1;
-%   what magnet? 
-    if()
+%   how many? 
+     if(dataElem.m(2) == 0)
+         numMag = 1;
+     else
+         numMag = 2;
+     end
+end
+
+% Set up of tail1 and tail2
+
+if(isNewMagnet == 1 && numMag == 2) %----------------------change isNewMagnet according to function detectChange
+    if(usT1 > usT2)
+    tail2 = head;
+    usT2 = usT2 +1;
+    end
+    
+elseif(isNewMagnet == 1 && numMag == 1)
+    if(usT1 < usT2 || usT1 == usT2)
+    tail1 = head;
+    usT1 = usT1 +1;
     end
 end
 
@@ -42,6 +65,7 @@ else
         end  
 
     % Full? 
+    tail = min(tail1,tail2);  %----------------how to do it taking into account the circular nature of the buffer?
         if(head == tail)
             isFull = 1;
         end
