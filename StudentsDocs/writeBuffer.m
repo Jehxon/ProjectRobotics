@@ -12,7 +12,11 @@ global usT2
 
 isEmpty = 0;
 
-% Magnet?
+if(isFull == 1)
+    disp('The buffer is Full');
+else
+
+    % Magnet?
 
 if(dataElem.M(1) == 0 && dataElem.M(2) == 0)
     isMagnet = 0;
@@ -34,10 +38,6 @@ elseif(isNewMagnet == 2)
     tail1 = head;
     tail2 = head;
 end
-
-if(isFull == 1)
-    disp('The buffe is Full');
-else
     
 % write data into the buffer
 

@@ -164,10 +164,9 @@ for i = 2 : nbLoops
         
     end
     
-    writeBuffer(dataToPutInBuffer,0); %Puts everything into the buffer (early try)
+    writeBuffer(dataToPutInBuffer,0);
 end
-    b = readBuffer(); %Takes everything from the buffer (early try)
-    
+b = readBuffer();
 % Save all tunings and robot parameters, so the conditions under
 % which the results were obtained are known. Also save inputs and 
 % measurements for later display.    

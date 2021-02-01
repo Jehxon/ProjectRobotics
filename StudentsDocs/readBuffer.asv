@@ -27,9 +27,7 @@ if(usT1 < usT2)
     usT2 = usT2 - 1;
 else
     tail = tail1;
-    if(warning == 1)
-        usT1 = 0;
-    else
+    if(warning ~= 1)
         usT1 = usT1 - 1;
     end
     
@@ -41,8 +39,6 @@ end
 
 if(head - tail < 0)
     t = -(rank_ - tail);
-elseif(warning == 1)
-    t = head -rank_;
 else
     t = tail;
 end
