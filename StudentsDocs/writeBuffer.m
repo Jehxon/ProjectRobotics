@@ -11,8 +11,6 @@ global usT1
 global usT2
 
 isEmpty = 0;
-usT1 = 0;
-usT2 = 0;
 
 % Magnet?
 
@@ -32,6 +30,9 @@ if(isNewMagnet == 1)
         tail2 = head;
         usT2 = usT2 + 1; 
     end
+elseif(isNewMagnet == 2)
+    tail1 = head;
+    tail2 = head;
 end
 
 if(isFull == 1)
@@ -60,15 +61,15 @@ else
 
     % Full? 
     
-    if(usT1 < usT2)
-        if(head == tail1)
-            isFull = 1;
+        if(usT1 < usT2)
+            if(head == tail1)
+                isFull = 1;
+            end
+        else
+            if(head == tail2)
+                isFull = 1;
+            end
         end
-    else
-        if(head == tail2)
-            isFull = 1;
-        end
-    end
     end
 end
 end

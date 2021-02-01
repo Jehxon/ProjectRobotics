@@ -7,6 +7,8 @@ global buffer
 global isFull 
 global isEmpty
 global rank_
+global usT1
+global usT2
 
 head = 1;
 tail1 = 1;
@@ -15,6 +17,9 @@ buffer = [];
 rank_ = 5;
 isFull = 0;
 isEmpty = 0; 
+usT1 = 0;
+usT2 = 0;
+
 a = [];
 
 data.x = [1;1;1];
@@ -36,12 +41,13 @@ data.t = [6];
 data.m = [7;7];
 
 
-writeBuffer(data,0);
+writeBuffer(data,1);
 
 
 
- a = readBuffer();
-
+a = readBuffer();
+b= [];
+b = readBuffer();
 
 
  
@@ -55,3 +61,5 @@ writeBuffer(data,0);
 
 buffer
 a
+b
+
