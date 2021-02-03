@@ -6,8 +6,8 @@ function changes = detectChange(measures, lastMeasures)
 % It is required that no magnet detected is coded as -1 in the measure
 % vector, that is why we use the addNegativeOnesToMeasurments function.
 
-measures = addNegativeOnesToMeasurments(measures);
-lastMeasures = addNegativeOnesToMeasurments(lastMeasures);
+measures = addValueToMeasurements(measures,-1);
+lastMeasures = addValueToMeasurements(lastMeasures,-1);
 
 noMagnetValue = -1;
 changes = 2;
@@ -20,7 +20,7 @@ limit = 2;
 if(lastMeasures(2) == noMagnetValue)
     limit = 1;
     changes = 1;
-    
+
     % If lastMeasures is empty, there can be no magnet loss, so we return
     % 0.
     if(lastMeasures(1) == noMagnetValue)

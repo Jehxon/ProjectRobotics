@@ -1,7 +1,7 @@
 % Localization using a grid of magnets in the ground.
 % -----
-% Usage: 
-%    - Set the characteristics of the robot and sensor in 
+% Usage:
+%    - Set the characteristics of the robot and sensor in
 %      RobotAndSensorDefinition.m
 %    - Set noise levels in DefineVariances.m
 %    - Set robot initial position in the present file.
@@ -28,7 +28,7 @@ X = [ 0, 0, 0*pi/180 ].' ;    % Set this according to robot initial position.
 
 %Load the data file
 dataFile = uigetfile('data/*.txt','Select data file') ;
-if isunix 
+if isunix
     eval(['load data/' , dataFile]) ;
 else
     eval(['load data\' , dataFile]) ;
@@ -42,7 +42,7 @@ fprintf('File: %s\n',dataFile);
 fprintf('Initial posture: x: %d mm  y: %d mm  theta: %d deg.\n', X(1),X(2),X(3)*180/pi);
 fprintf('Tuning parameter: %d\n',sigmaTuning);
 
-P = Pinit ; 
+P = Pinit ;
 
 % Log data for display of results. Do not modify.
 
@@ -61,129 +61,131 @@ dataToPutInBuffer = struct;
 lastMeasures = -ones(1,2);
 
 
-for i = 2 : nbLoops 
-    
+for i = 2 : nbLoops
+
     t = (i-1)*samplingPeriod ;
-    dataToPutInBuffer.time = t;
-    
+    dataToPutInBuffer.T = t;
+
     waitbar(i/nbLoops) ;
 
     % Calculate input vector from proprioceptive sensors
-    deltaq = [ qR(i) - qR(i-1) ; 
+    deltaq = [ qR(i) - qR(i-1) ;
                qL(i) - qL(i-1) ] ;
     U = jointToCartesian * deltaq ;  % joint speed to Cartesian speed.
-    
+
     % Calculate linear approximation of the system equation
     A = [ 1 , 0 , -U(1)*sin(X(3)) ;
           0 , 1 ,  U(1)*cos(X(3)) ;
           0 , 0 ,         1       ] ;
-    B = [ cos(X(3)) , 0 ; 
-          sin(X(3)) , 0 ; 
+    B = [ cos(X(3)) , 0 ;
+          sin(X(3)) , 0 ;
               0     , 1 ] ;
-       
+
     % Predic state (here odometry)
     X = EvolutionModel( X , U ) ;
-    
+
     % Error propagation
     P = A*P*(A.') + B*Qbeta*(B.') + Qalpha ;
-    
+
     LogData( t , 'prediction' , X , P , U , [0;0] ) ;
-    
+
     % Vector of measurements. Size is zero if no magnet was detected.
 
     measures = ExtractMeasurements( sensorReadings(i), ...
         nbReedSensors, magnetDetected ) ;
-    
-    
+
+
     % Here we need to compare the measures with the previous iteration
-    
+
     [magnetLost, magnetFound] = detectChange2(measures, lastMeasures);
     lastMeasures = measures;
-    
-    dataToPutInBuffer.meausres = measures;
-    dataToPutInBuffer.P = P;  
+
+    dataToPutInBuffer.M = addValueToMeasurements(measures,0);
+    p = matrixToVector(P);
+    dataToPutInBuffer.P = p;
     dataToPutInBuffer.X = X;
     dataToPutInBuffer.U = U;
-    
-%    if length(measures) > 0 
+
+%    if length(measures) > 0
 %        i
 %        measures
 %        disp('--');
 %    end
-            
+
     % When two or more magnets are detected simultaneously, they are taken
     % as independant measurements, for the sake of simplicity.
 
-    for measNumber = 1 : length(measures) 
-        
+    for measNumber = 1 : length(measures)
+
         % Homogeneous transform of robot frame with respect to world frame
-        oTm = [ cos(X(3)) , -sin(X(3)) , X(1)  ; 
-                sin(X(3)) ,  cos(X(3)) , X(2)  ; 
+        oTm = [ cos(X(3)) , -sin(X(3)) , X(1)  ;
+                sin(X(3)) ,  cos(X(3)) , X(2)  ;
                     0     ,      0     ,  1    ] ;
         mTo = inv(oTm) ;
-        
+
         % Measurement vector: coordinates of the magnet in Rm.
-        Y = [ sensorPosAlongXm ; 
+        Y = [ sensorPosAlongXm ;
               sensorRes*( measures(measNumber) - sensorOffset ) ] ;
-        
+
        dataToPutInBuffer.Y = Y;
-         
+
         % Now in homogeneous coordinates for calculations.
-        mMeasMagnet = [ Y ;                
+        mMeasMagnet = [ Y ;
                         1 ] ;
-                
-        % Corresponding position in absolute frame. 
+
+        % Corresponding position in absolute frame.
         oMeasMagnet = oTm * mMeasMagnet ;
-        
+
         % Due to measurement and localization errors, the previously calculated
         % position does not match an actual magnet.
         % Which actual magnet is closest? It will be the candidate magnet for
         % the update phase of the state estimator.
         oRealMagnet = round( oMeasMagnet ./ [xSpacing ; ySpacing ; 1] ) .* [xSpacing ; ySpacing ; 1] ;
 
-        % The position of the real magnet in robot frame. It will in general 
-        % be different from the measured one. 
+        % The position of the real magnet in robot frame. It will in general
+        % be different from the measured one.
         mRealMagnet = oTm \ oRealMagnet ;  % That's inv(oTm)*oRealMagnet = mTo*oRealMagnet
-        
-        % The expected measurement are the two coordinates of the real 
+
+        % The expected measurement are the two coordinates of the real
         % magnet in the robot frame.
         Yhat = mRealMagnet(1:2) ;
-        
+
         C = [ -cos(X(3)) , -sin(X(3)) , -sin(X(3))*(oRealMagnet(1)-X(1))+cos(X(3))*(oRealMagnet(2)-X(2)) ;
                sin(X(3)) , -cos(X(3)) , -sin(X(3))*(oRealMagnet(2)-X(2))-cos(X(3))*(oRealMagnet(1)-X(1)) ] ;
-                      
-        innov = Y - Yhat ;   
+
+        innov = Y - Yhat ;
         dMaha = sqrt( innov.' * inv( C*P*C.' + Qgamma) * innov ) ;
-        
+
         LogData( t , 'measurement' , X , P , [0;0] , Y ) ;
-        
+
         if dMaha <= mahaThreshold
             K = P * C.' * inv( C*P*C.' + Qgamma) ;
             X = X + K*innov ;
             P = (eye(length(X)) - K*C) * P ;
             LogData( t , 'update' , X , P , [0;0] , [0;0] ) ;
-            
+
             dataToPutInBuffer.X = X;
-            dataToPutInBuffer.P = P;
+            p = matrixToVector(P);
+            dataToPutInBuffer.P = p;
         end
-        
+
     end
-    
+
     writeBuffer(dataToPutInBuffer,0); %Puts everything into the buffer (early try)
 end
 
     b = readBuffer(); %Takes everything from the buffer (early try)
-    
+
 % Save all tunings and robot parameters, so the conditions under
-% which the results were obtained are known. Also save inputs and 
-% measurements for later display.    
-    
+% which the results were obtained are known. Also save inputs and
+% measurements for later display.
+
 save inputLog ...
      rwheel trackGauge encoderRes nbReedSensors samplingPeriod ...
      xSpacing ySpacing  ...
      U sensorReadings ...
-     Pinit Qgamma sigmaTuning Qbeta Qalpha mahaThreshold 
+     Pinit Qgamma sigmaTuning Qbeta Qalpha mahaThreshold
 
- 
+
 LogData( t , 'termination' , X , P , [0;0] , [0;0] ) ;
 close(wbHandle) ;

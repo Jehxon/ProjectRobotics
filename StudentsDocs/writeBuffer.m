@@ -43,7 +43,7 @@ end
 
     buffer.X(:,head) = dataElem.X;
     buffer.P(:,head) = dataElem.P;
-    buffer.Y(:,head) = dataElem.Y;
+    %buffer.Y(:,head) = dataElem.Y;
     buffer.U(:,head) = dataElem.U;
     buffer.T(:,head) = dataElem.T;
     buffer.M(:,head) = dataElem.M;

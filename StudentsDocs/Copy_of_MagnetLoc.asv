@@ -94,15 +94,15 @@ for i = 2 : nbLoops
     measures = ExtractMeasurements( sensorReadings(i), ...
         nbReedSensors, magnetDetected ) ;
     
+    
     % Here we need to compare the measures with the previous iteration
     
-    detectChange2(measures, lastMeasures);
+    [magnetLost, magnetFound] = detectChange2(measures, lastMeasures);
     lastMeasures = measures;
     
-    
-    dataToPutInBuffer.M = measures;
-    %p = matrixToVector(P); useless here with the struct
-    dataToPutInBuffer.P = P;  
+    dataToPutInBuffer.M = ameasures;
+    p = matrixToVector(P);
+    dataToPutInBuffer.P = p;  
     dataToPutInBuffer.X = X;
     dataToPutInBuffer.U = U;
     
@@ -173,6 +173,7 @@ for i = 2 : nbLoops
     
     writeBuffer(dataToPutInBuffer,0); %Puts everything into the buffer (early try)
 end
+
     b = readBuffer(); %Takes everything from the buffer (early try)
     
 % Save all tunings and robot parameters, so the conditions under

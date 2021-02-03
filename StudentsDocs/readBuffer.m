@@ -10,6 +10,7 @@ global isEmpty
 global usT1
 global usT2
 
+warning = 0;
 if(isFull == 1)
     warning = 1;
     isFull = 0;
@@ -52,7 +53,7 @@ end
 for f = 1 : head-t
     data.X(:,f) = buffer.X(:,tail);
     data.P(:,f) = buffer.P(:,tail);
-    data.Y(:,f) = buffer.Y(:,tail);
+    %data.Y(:,f) = buffer.Y(:,tail);
     data.U(:,f) = buffer.U(:,tail);
     data.T(:,f) = buffer.T(:,tail);
     data.M(:,f) = buffer.M(:,tail);
