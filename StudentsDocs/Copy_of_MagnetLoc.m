@@ -102,7 +102,7 @@ for i = 2 : nbLoops
 
     dataToPutInBuffer.M = addValueToMeasurements(measures,0);
     p = matrixToVector(P);
-    dataToPutInBuffer.P = p;
+    dataToPutInBuffer.P = P;
     dataToPutInBuffer.X = X;
     dataToPutInBuffer.U = U;
 
@@ -166,7 +166,7 @@ for i = 2 : nbLoops
 
             dataToPutInBuffer.X = X;
             p = matrixToVector(P);
-            dataToPutInBuffer.P = p;
+            dataToPutInBuffer.P = P;
         end
 
     end
@@ -175,9 +175,11 @@ for i = 2 : nbLoops
    
     if(magnetLost == 1)
          a = readBuffer();
+         % Recompute everything
      elseif(magnetLost == 2)
          a = readBuffer();
          b = readBuffer();
+         % Recompute twice ??
     end
     
 % It writes the data into the buffer each cycle  

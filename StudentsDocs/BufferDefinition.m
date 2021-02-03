@@ -11,7 +11,7 @@ global usT2
 head = 1;
 tail1 = 1;
 tail2 = 1;
-buffer = [];
+buffer = struct;
 rank_ = 500;
 isFull = 0;
 isEmpty = 0; 

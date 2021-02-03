@@ -41,12 +41,12 @@ end
     
 % write data into the buffer
 
-    buffer.X(:,head) = dataElem.X;
-    buffer.P(:,head) = dataElem.P;
-    %buffer.Y(:,head) = dataElem.Y;
-    buffer.U(:,head) = dataElem.U;
-    buffer.T(:,head) = dataElem.T;
-    buffer.M(:,head) = dataElem.M;
+    buffer(head).X = dataElem.X;
+    buffer(head).P = dataElem.P;
+    %buffer(head).Y = dataElem.Y;
+    buffer(head).U = dataElem.U;
+    buffer(head).T = dataElem.T;
+    buffer(head).M = dataElem.M;
     
 % if there is not a magnet, we do not increase head
 
@@ -57,7 +57,7 @@ end
     
         if(head == rank_ + 1)
             head = 1;
-        end  
+        end
 
     % Full? 
     

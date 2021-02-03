@@ -49,14 +49,15 @@ else
 end
 
 % Read data from the buffer
+data = struct;
 
 for f = 1 : head-t
-    data.X(:,f) = buffer.X(:,tail);
-    data.P(:,f) = buffer.P(:,tail);
-    %data.Y(:,f) = buffer.Y(:,tail);
-    data.U(:,f) = buffer.U(:,tail);
-    data.T(:,f) = buffer.T(:,tail);
-    data.M(:,f) = buffer.M(:,tail);
+    data(f).X = buffer(tail).X;
+    data(f).P = buffer(tail).P;
+    %data(f).Y = buffer(tail).Y;
+    data(f).U = buffer(tail).U;
+    data(f).T = buffer(tail).T;
+    data(f).M = buffer(tail).M;
 
 
     tail = tail + 1;
