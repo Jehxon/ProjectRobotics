@@ -4,10 +4,8 @@ function changes = detectChange(measures, lastMeasures)
 % It returns the number of magnets that the robot stopped detecting.
 
 % It is required that no magnet detected is coded as -1 in the measure
-% vector, that is why we use the addNegativeOnesToMeasurments function.
+% vector.
 
-measures = addValueToMeasurements(measures,-1);
-lastMeasures = addValueToMeasurements(lastMeasures,-1);
 
 noMagnetValue = -1;
 changes = 2;

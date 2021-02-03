@@ -44,7 +44,7 @@ for i = 2 : nbLoops
     [buffer(i,3),buffer(i,4)] = detectChange2(measures, buffer(i-1,1:2));
     
     
-    buffer(i,1:2) = measures;
+    buffer(i,1:2) = addValueToMeasurements(measures,-1);
     
 end
 
