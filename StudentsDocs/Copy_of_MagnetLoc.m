@@ -170,11 +170,24 @@ for i = 2 : nbLoops
         end
 
     end
-
-    writeBuffer(dataToPutInBuffer,0); %Puts everything into the buffer (early try)
+    
+% It extracts the measures when we lose a magnet
+   
+    if(magnetLost == 1)
+         a = readBuffer();
+     elseif(magnetLost == 2)
+         a = readBuffer();
+         b = readBuffer();
+    end
+    
+% It writes the data into the buffer each cycle  
+    
+    writeBuffer(dataToPutInBuffer, magnetFound);
+     
+     
+     
+    
 end
-
-    b = readBuffer(); %Takes everything from the buffer (early try)
 
 % Save all tunings and robot parameters, so the conditions under
 % which the results were obtained are known. Also save inputs and
