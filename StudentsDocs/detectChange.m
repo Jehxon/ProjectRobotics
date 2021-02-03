@@ -3,22 +3,36 @@ function changes = detectChange(measures, lastMeasures)
 % measure and the current measure.
 % It returns the number of magnets that the robot stopped detecting.
 
-% It is required that no magnet detected is coded as -1 in the measure vector.
+% It is required that no magnet detected is coded as -1 in the measure
+% vector, that is why we use the addNegativeOnesToMeasurments function.
+
+measures = addNegativeOnesToMeasurments(measures);
+lastMeasures = addNegativeOnesToMeasurments(lastMeasures);
 
 noMagnetValue = -1;
 changes = 2;
 limit = 2;
 
-
+% If there is at most one magnet detected in the old measure, then we must
+% only check the first measure of lastMeasures and we have at most one
+% magnet lost. We do that in order not to compare no magnet with no magnet,
+% and finding a false match.
 if(lastMeasures(2) == noMagnetValue)
     limit = 1;
     changes = 1;
+    
+    % If lastMeasures is empty, there can be no magnet loss, so we return
+    % 0.
     if(lastMeasures(1) == noMagnetValue)
         changes = 0;
         return;
     end
 end
 
+% We compare each measure from lastMeasures to each measures in the current
+% measure, if the values match (one unit or less appart) then we remove one
+% magnet from the counter, because there is one magnet that is still
+% detected.
 for i = 1:limit
     for j = measures
         if(abs(lastMeasures(i)-j) <= 1)
@@ -30,61 +44,5 @@ end
 
 changes = max(changes,0);
 
-
-%{
-changed = sum(abs(measures-lastMeasures) > 0.5);
-
-if(lastMeasures(2) == noMagnetValue)
-    
-    if(lastMeasures(1) == noMagnetValue)
-        changed = 0;
-        return;
-    end
-    
-    
-    if(measures(2) == noMagnetValue)
-        changed = abs(measures(1)-lastMeasures(1)) > 0.5;
-        return;
-    end
-    
-   % aled
-    
-    
-end
-
-
-if(measures(2) == noMagnetValue)
-    changed = 1 + abs(measures(1)-lastMeasures(2)) > 0.5;
-end
-%}
-
-
-
-
-
-%{
-% If both measures are perfectly equal or really close, there is no change
-if(not(any(abs(measures-lastMeasures) > 0.5)))
-    return;
-end
-
-
-% If we go from 2 measures to none
-if(all(lastMeasures > 0) && all(measures == noMagnetValue))
-    changed = 2;
-    return;
-end
-
-% If we have 2 measures magnets in the last measure but only 1 in the
-% current measure, there is one change
-if(measures(2) == noMagnetValue && all(lastMeasures ~= noMagnetValue))
-    changed = 1;
-    return;
-end
-
-if(all(measures == noMagnetValue) && any(lastMeasures ~= noMagnetValue))
-    changed = 1;
-end
-%}
 
 end

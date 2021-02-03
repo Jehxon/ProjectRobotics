@@ -1,0 +1,14 @@
+function newMeasures = addNegativeOnesToMeasurments(measures)
+
+% This function add -1 as many times as necessary to the input vector in 
+% order to make it compatible with the detectChange function.
+
+newMeasures = measures;
+
+if(length(measures) == 2)
+    newMeasures = measures;
+else
+    
+
+end
+

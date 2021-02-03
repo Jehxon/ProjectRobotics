@@ -58,12 +58,13 @@ LogData( 0 , 'init' , X , P , [0;0] , [0;0] ) ;
 wbHandle = waitbar(0,'Computing...') ;
 
 dataToPutInBuffer = struct;
+lastMeasures = -ones(1,2);
 
 
 for i = 2 : nbLoops 
     
     t = (i-1)*samplingPeriod ;
-    dataToPutInBuffer.T = t;
+    dataToPutInBuffer.time = t;
     
     waitbar(i/nbLoops) ;
 
@@ -73,8 +74,8 @@ for i = 2 : nbLoops
     U = jointToCartesian * deltaq ;  % joint speed to Cartesian speed.
     
     % Calculate linear approximation of the system equation
-    A = [ 1 , 0 , -U(1)*sin(X(3)) ; 
-          0 , 1 ,  U(1)*cos(X(3)) ; 
+    A = [ 1 , 0 , -U(1)*sin(X(3)) ;
+          0 , 1 ,  U(1)*cos(X(3)) ;
           0 , 0 ,         1       ] ;
     B = [ cos(X(3)) , 0 ; 
           sin(X(3)) , 0 ; 
@@ -93,9 +94,14 @@ for i = 2 : nbLoops
     measures = ExtractMeasurements( sensorReadings(i), ...
         nbReedSensors, magnetDetected ) ;
     
-    dataToPutInBuffer.M = measures;
-    p = matrixToVector(P);
-    dataToPutInBuffer.P = p;  
+    
+    % Here we need to compare the measures with the previous iteration
+    
+    [magnetLost, magnetFound] = detectChange2(measures, lastMeasures);
+    lastMeasures = measures;
+    
+    dataToPutInBuffer.meausres = measures;
+    dataToPutInBuffer.P = P;  
     dataToPutInBuffer.X = X;
     dataToPutInBuffer.U = U;
     
@@ -158,14 +164,14 @@ for i = 2 : nbLoops
             LogData( t , 'update' , X , P , [0;0] , [0;0] ) ;
             
             dataToPutInBuffer.X = X;
-            p = matrixToVector(P);
-            dataToPutInBuffer.P = p;
+            dataToPutInBuffer.P = P;
         end
         
     end
     
     writeBuffer(dataToPutInBuffer,0); %Puts everything into the buffer (early try)
 end
+
     b = readBuffer(); %Takes everything from the buffer (early try)
     
 % Save all tunings and robot parameters, so the conditions under
