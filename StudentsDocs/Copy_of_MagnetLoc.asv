@@ -121,12 +121,10 @@ for i = 2 : nbLoops
              indexOfMeasure = round(length(a)/2);
 
              measures = a(indexOfMeasure).M;
-             %measure = measuresfunct(a(:).M); %1 or 2 ?----------------------------------
-             measure = measures(1);
+             measure = measures(0); %0 or 1 ?----------------------------------
              X = a(indexOfMeasure).X;
              P = a(indexOfMeasure).P;%resize !
-             t = a(indexOfMeasure).T;
-             
+             t = a.T(indexOfMeasure);
             % Homogeneous transform of robot frame with respect to world frame
             oTm = [ cos(X(3)) , -sin(X(3)) , X(1)  ;
                     sin(X(3)) ,  cos(X(3)) , X(2)  ;
@@ -196,7 +194,7 @@ for i = 2 : nbLoops
             buffer(indicesInBuffer(j)).P = P;
 
             t = a(j).T;
-            %LogData( t , 'prediction' , X , P , U , [0;0] ) ;
+            LogData( t , 'prediction' , X , P , U , [0;0] ) ;
           end
         
      elseif(magnetLost == 2)
@@ -206,7 +204,7 @@ for i = 2 : nbLoops
              indexOfMeasure = round(length(a)/2);
 
              measures = a(indexOfMeasure).M;
-             measure = measures(1); %1 or 2 ?----------------------------------
+             measure = measures(0); %0 or 1 ?----------------------------------
              X = a(indexOfMeasure).X;
              P = a(indexOfMeasure).P;%resize !
              t = a(indexOfMeasure).T;
@@ -260,7 +258,7 @@ for i = 2 : nbLoops
 
             %Odometry
          for j = indexOfMeasure:length(a)   
-            U = a(j).U;
+            U = a.U(j);
 
             % Calculate linear approximation of the system equation
             A = [ 1 , 0 , -U(1)*sin(X(3)) ;
@@ -272,14 +270,14 @@ for i = 2 : nbLoops
 
             % Predic state (here odometry)
             X = EvolutionModel( X , U ) ;
-            buffer(indicesInBuffer(j)).X = X;
+            buffer.X(indicesInBuffer(j)) = X;
 
             % Error propagation
             P = A*P*(A.') + B*Qbeta*(B.') + Qalpha ;
-            buffer(indicesInBuffer(j)).P = P;
+            buffer.P(indicesInBuffer(j)) = P;
 
             t = a.T(j);
-            %LogData( t , 'prediction' , X , P , U , [0;0] ) ;
+            LogData( t , 'prediction' , X , P , U , [0;0] ) ;
          end
          
         end

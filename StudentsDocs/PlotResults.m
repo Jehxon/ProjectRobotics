@@ -67,6 +67,7 @@ data = textscan(fid,repmat('%f',1,numvars)); %#ok<NASGU>
 eval(['[' strrep(firstline,' ',',') '] = deal(data{:});']) ;
 fclose(fid);
 
+figure;plot(diff(t),'.')
 % Prepare vectors and matrices
 nbRes = length(t) ;
 nbPeriods = sum(calcPhase==1) ;

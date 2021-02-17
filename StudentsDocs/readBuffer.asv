@@ -1,4 +1,4 @@
-function [data,indicesRead] = readBuffer()
+function [data, = readBuffer()
 
 global head
 global tail1
@@ -36,7 +36,7 @@ else
     
 end
 
-indicesRead = [];
+indexOfBeginning = tail;
 % When head is at the beginning of the buffer and tail at the end,we adjust
 % the index t
 
@@ -58,7 +58,7 @@ for f = 1 : head-t
     data(f).U = buffer(tail).U;
     data(f).T = buffer(tail).T;
     data(f).M = buffer(tail).M;
-    indicesRead = [indicesRead tail];
+
 
     tail = tail + 1;
 
