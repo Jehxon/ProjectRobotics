@@ -121,8 +121,8 @@ for i = 2 : nbLoops
              indexOfMeasure = round(length(a)/2);
 
              measures = a(indexOfMeasure).M;
-             %measure = measuresfunct(a(:).M); %1 or 2 ?----------------------------------
-             measure = measures(1);
+             measure = measuresfunct([a.M]); %1 or 2 ?----------------------------------
+             %measure = measures(1);
              X = a(indexOfMeasure).X;
              P = a(indexOfMeasure).P;%resize !
              t = a(indexOfMeasure).T;
@@ -204,9 +204,10 @@ for i = 2 : nbLoops
 
              [a,indicesInBuffer] = readBuffer();
              indexOfMeasure = round(length(a)/2);
-
+            
              measures = a(indexOfMeasure).M;
-             measure = measures(1); %1 or 2 ?----------------------------------
+             measure = measures(k);
+            
              X = a(indexOfMeasure).X;
              P = a(indexOfMeasure).P;%resize !
              t = a(indexOfMeasure).T;
@@ -278,7 +279,7 @@ for i = 2 : nbLoops
             P = A*P*(A.') + B*Qbeta*(B.') + Qalpha ;
             buffer(indicesInBuffer(j)).P = P;
 
-            t = a.T(j);
+            t = a(j).T;
             %LogData( t , 'prediction' , X , P , U , [0;0] ) ;
          end
          

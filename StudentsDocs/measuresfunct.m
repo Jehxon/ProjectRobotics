@@ -1,5 +1,10 @@
-function measure = measuresfunct(a)
+function measure = measuresfunct(c)
 
+for i = 1 : length(c)/2
+    a(i,1)=c(2*i-1);
+    a(i,2)=c(2*i);
+end
+    measure = sum(a(round(length(a)/2),:))/2;
    if(a(round(length(a)/2),2) == 0)
         measure = a(round(length(a)/2),1);
         return;
