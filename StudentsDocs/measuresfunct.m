@@ -1,30 +1,21 @@
-function measure = measuresfunct(c)
+function measure = measuresfunct(a,mes)
 
-for i = 1 : length(c)/2
-    a(i,1)=c(2*i-1);
-    a(i,2)=c(2*i);
-end
-    measure = sum(a(round(length(a)/2),:))/2;
-   if(a(round(length(a)/2),2) == 0)
-        measure = a(round(length(a)/2),1);
-        return;
-   end
+  %remove zeros
+  a=a(a~=0);
+  mes=mes(mes~=0);
 
-    for i = 1 : length(a)
-        mag = a(i,2);
-        if(mag == 0)
-            meas = a(i,1);
-            measobj1 = a(round(length(a)/2),1);
-            measobj2 = a(round(length(a)/2),2);
-            if (abs(meas-measobj1)<abs(meas-measobj2))
-                measure = measobj1;
-            else
-                measure = measobj2;
-            end
-            return;
-        end
+  maxDist=0;
+  maxDistIndex=1;
+
+  for i = 1:length(a)
+    for j= 1:length(mes)
+      d = abs(a(i)-mes(j));
+      if (d>maxDist)
+        maxDist = d;
+        maxDistIndex = i;
+      end
     end
-
-    
+  end
+  measure = a(maxDistIndex);
 
 end

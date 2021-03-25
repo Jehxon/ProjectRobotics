@@ -119,10 +119,9 @@ for i = 2 : nbLoops
     if(magnetLost == 1)
              [a,indicesInBuffer] = readBuffer();
              indexOfMeasure = round(length(a)/2);
-
-             measures = a(indexOfMeasure).M;
-             measure = measuresfunct([a.M]); %1 or 2 ?----------------------------------
-             %measure = measures(1);
+             
+             measure = measuresfunct(a(length(a)).M,measures); %1 or 2 ?----------------------------------
+             
              X = a(indexOfMeasure).X;
              P = a(indexOfMeasure).P;%resize !
              t = a(indexOfMeasure).T;
@@ -206,8 +205,9 @@ for i = 2 : nbLoops
              [a,indicesInBuffer] = readBuffer();
              indexOfMeasure = round(length(a)/2);
             
-             measures = a(indexOfMeasure).M;
-             measure = a(lemgth(a),k); %-------------------------probleme.
+             measure = a(length(a),k); 
+             % Here we take the last measure because we're not certain the
+             % middle of a contains the 2 lost measures
             
              X = a(indexOfMeasure).X;
              P = a(indexOfMeasure).P;%resize !
