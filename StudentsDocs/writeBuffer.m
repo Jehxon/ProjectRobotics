@@ -50,7 +50,7 @@ end
     
 % if there is not a magnet, we do not increase head
 
-    if(isMagnet == 1)
+    if(isMagnet == 1 || isMagnet ==0)
         head=head+1;
     
     % If we arrive to the end -> reset index

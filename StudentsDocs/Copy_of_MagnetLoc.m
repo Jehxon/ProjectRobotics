@@ -24,7 +24,7 @@ RobotAndSensorDefinition ;
 DefineVariances ;
 BufferDefinition ;
 
-X = [ 0, 0, 0*pi/180 ].' ;    % Set this according to robot initial position.
+X = [ 0, 25, 0*pi/180 ].' ;    % Set this according to robot initial position.
 
 %Load the data file
 dataFile = uigetfile('data/*.txt','Select data file') ;
@@ -200,13 +200,14 @@ for i = 2 : nbLoops
           end
         
      elseif(magnetLost == 2)
-        for k = 1:2
+         disp("2 en meme temps");
+         for k = 1:2
 
              [a,indicesInBuffer] = readBuffer();
              indexOfMeasure = round(length(a)/2);
             
              measures = a(indexOfMeasure).M;
-             measure = measures(k);
+             measure = a(lemgth(a),k); %-------------------------probleme.
             
              X = a(indexOfMeasure).X;
              P = a(indexOfMeasure).P;%resize !
@@ -283,7 +284,7 @@ for i = 2 : nbLoops
             %LogData( t , 'prediction' , X , P , U , [0;0] ) ;
          end
          
-        end
+         end
     end
     
 % It writes the data into the buffer each cycle  
