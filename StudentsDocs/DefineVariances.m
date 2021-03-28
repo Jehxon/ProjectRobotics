@@ -11,7 +11,7 @@ Pinit = diag( [sigmaX^2 sigmaY^2 sigmaTheta^2] ) ;
 
 % Measurement noise.
 
-sigmaXmeasurement = sqrt((20)^2/12) ;  % Determined by student
+sigmaXmeasurement = 0.1*sqrt((20)^2/12) ;  % Determined by student
 sigmaYmeasurement = sqrt(10^2/12) ;  % Determined by student
 Qgamma = diag( [sigmaXmeasurement^2 sigmaYmeasurement^2] ) ;
 

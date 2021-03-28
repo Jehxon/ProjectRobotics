@@ -22,7 +22,7 @@
 RobotAndSensorDefinition ;
 DefineVariances ;
 
-X = [ 0, 25, 0*pi/180 ].' ;    % Set this according to robot initial position.
+X = [ 0, 0, 0*pi/180 ].' ;    % Set this according to robot initial position.
 
 %Load the data file
 dataFile = uigetfile('data/*.txt','Select data file') ;

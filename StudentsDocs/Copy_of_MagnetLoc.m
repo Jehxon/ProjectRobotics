@@ -19,12 +19,12 @@
 % and Marteen Samuel. Supervision: Gaëtan Garcia.
 %    - This program (using Samuel and Cichosz's work): Gaëtan Garcia
 
-clear all
+clear all;
 RobotAndSensorDefinition ;
 DefineVariances ;
 BufferDefinition ;
 
-X = [ 0, 25, 0*pi/180 ].' ;    % Set this according to robot initial position.
+X = [ 0, 0, 0*pi/180 ].' ;    % Set this according to robot initial position.
 
 %Load the data file
 dataFile = uigetfile('data/*.txt','Select data file') ;
@@ -120,10 +120,10 @@ for i = 2 : nbLoops
              [a,indicesInBuffer] = readBuffer();
              indexOfMeasure = round(length(a)/2);
              
-             measure = measuresfunct(a(length(a)).M,measures); %1 or 2 ?----------------------------------
+             measure = measuresfunct(a,measures);
              
              X = a(indexOfMeasure).X;
-             P = a(indexOfMeasure).P;%resize !
+             P = a(indexOfMeasure).P;
              t = a(indexOfMeasure).T;
              
             % Homogeneous transform of robot frame with respect to world frame
@@ -195,7 +195,7 @@ for i = 2 : nbLoops
             buffer(indicesInBuffer(j)).P = P;
 
             t = a(j).T;
-            %LogData( t , 'prediction' , X , P , U , [0;0] ) ;
+            % LogData( t , 'update' , X , P , U , [0;0] ) ;
           end
         
      elseif(magnetLost == 2)
@@ -205,7 +205,7 @@ for i = 2 : nbLoops
              [a,indicesInBuffer] = readBuffer();
              indexOfMeasure = round(length(a)/2);
             
-             measure = a(length(a),k); 
+             measure = a(length(a)).M(k); 
              % Here we take the last measure because we're not certain the
              % middle of a contains the 2 lost measures
             
@@ -287,12 +287,8 @@ for i = 2 : nbLoops
          end
     end
     
-% It writes the data into the buffer each cycle  
-    
-    writeBuffer(dataToPutInBuffer, magnetFound);
-     
-     
-     
+% Writing the data into the buffer each cycle  
+writeBuffer(dataToPutInBuffer, magnetFound);
     
 end
 
