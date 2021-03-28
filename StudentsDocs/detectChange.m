@@ -18,7 +18,6 @@ limit = 2;
 if(lastMeasures(2) == noMagnetValue)
     limit = 1;
     changes = 1;
-
     % If lastMeasures is empty, there can be no magnet loss, so we return
     % 0.
     if(lastMeasures(1) == noMagnetValue)

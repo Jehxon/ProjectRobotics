@@ -1,4 +1,4 @@
-function measure = measuresfunct(a,currentMeasure)
+function measure = exactMeasure(a,currentMeasure)
 %This function returns the measure of the magnet we just lost selected from
 %the part of the buffer a, given the current measure mes
 
